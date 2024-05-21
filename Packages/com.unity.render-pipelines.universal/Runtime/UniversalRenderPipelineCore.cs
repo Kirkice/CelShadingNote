@@ -1210,6 +1210,9 @@ namespace UnityEngine.Rendering.Universal
 
         /// <summary> Keyword used for less expensive Linear to SRGB conversions. </summary>
         internal const string UseFastSRGBLinearConversion = "_USE_FAST_SRGB_LINEAR_CONVERSION";
+        
+        /// <summary> Keyword used for less expensive Linear to SRGB conversions. </summary>
+        internal const string UseBWFlash = "_USE_BW_FLASH";
 
         /// <summary> Keyword used for first target in the DBuffer. </summary>
         public const string DBufferMRT1 = "_DBUFFER_MRT1";

@@ -54,6 +54,8 @@ namespace UnityEngine.Rendering.Universal
         ColorAdjustments m_ColorAdjustments;
         Tonemapping m_Tonemapping;
         FilmGrain m_FilmGrain;
+        BWFlash m_BWFlash;
+        
 
         // Misc
         const int k_MaxPyramidSize = 16;
@@ -361,6 +363,7 @@ namespace UnityEngine.Rendering.Universal
             m_ColorAdjustments = stack.GetComponent<ColorAdjustments>();
             m_Tonemapping = stack.GetComponent<Tonemapping>();
             m_FilmGrain = stack.GetComponent<FilmGrain>();
+            m_BWFlash = stack.GetComponent<BWFlash>();
             m_UseFastSRGBLinearConversion = renderingData.postProcessingData.useFastSRGBLinearConversion;
             m_SupportScreenSpaceLensFlare = renderingData.postProcessingData.supportScreenSpaceLensFlare;
             m_SupportDataDrivenLensFlare = renderingData.postProcessingData.supportDataDrivenLensFlare;
@@ -658,6 +661,14 @@ namespace UnityEngine.Rendering.Universal
                 SetupGrain(cameraData, m_Materials.uber);
                 SetupDithering(cameraData, m_Materials.uber);
 
+                // m_Materials.uber.EnableKeyword(ShaderKeywordStrings.UseBWFlash);
+                SetupBWFlash(m_Materials.uber, cameraData.xr);
+                // if (m_BWFlash.active)
+                // {
+                //     m_Materials.uber.EnableKeyword(ShaderKeywordStrings.UseBWFlash);
+                //     SetupBWFlash(m_Materials.uber, cameraData.xr);
+                // }
+                
                 if (RequireSRGBConversionBlitToBackBuffer(cameraData.requireSrgbConversion))
                     m_Materials.uber.EnableKeyword(ShaderKeywordStrings.LinearToSRGBConversion);
 
@@ -1606,6 +1617,19 @@ namespace UnityEngine.Rendering.Universal
 
 #endregion
 
+#region BWFlash
+void SetupBWFlash(Material material, XRPass xrPass)
+{
+    material.SetColor(ShaderConstants._DarkColor, m_BWFlash.darkcolor.value);
+    material.SetColor(ShaderConstants._LightColor, m_BWFlash.lightcolor.value);
+    material.SetVector(ShaderConstants._BW_Center, m_BWFlash.center.value);
+    material.SetFloat(ShaderConstants._BW_Intensity, m_BWFlash.intensity.value);
+    material.SetFloat(ShaderConstants._BW_Contrast, m_BWFlash.contrast.value);
+    material.SetFloat(ShaderConstants._BW_Ratio, m_BWFlash.ratio.value);
+    material.SetInt(ShaderConstants._BW_Reversal, m_BWFlash.reversal.value ? 1 : 0);
+}
+#endregion
+
 #region 8-bit Dithering
 
         void SetupDithering(UniversalCameraData cameraData, Material material)
@@ -1986,6 +2010,15 @@ namespace UnityEngine.Rendering.Universal
             public static readonly int _UserLut = Shader.PropertyToID("_UserLut");
             public static readonly int _DownSampleScaleFactor = Shader.PropertyToID("_DownSampleScaleFactor");
 
+            //  BWFlash
+            public static readonly int _DarkColor = Shader.PropertyToID("_DarkColor");
+            public static readonly int _LightColor = Shader.PropertyToID("_LightColor");
+            public static readonly int _BW_Center = Shader.PropertyToID("_CoordinatesCenter");
+            public static readonly int _BW_Intensity = Shader.PropertyToID("_Intensity");
+            public static readonly int _BW_Contrast = Shader.PropertyToID("_Contrast");
+            public static readonly int _BW_Ratio = Shader.PropertyToID("_Ratio");
+            public static readonly int _BW_Reversal = Shader.PropertyToID("_Reversal");
+            
             public static readonly int _FlareOcclusionRemapTex = Shader.PropertyToID("_FlareOcclusionRemapTex");
             public static readonly int _FlareOcclusionTex = Shader.PropertyToID("_FlareOcclusionTex");
             public static readonly int _FlareOcclusionIndex = Shader.PropertyToID("_FlareOcclusionIndex");
@@ -1999,6 +2032,8 @@ namespace UnityEngine.Rendering.Universal
             public static readonly int _FlareData5 = Shader.PropertyToID("_FlareData5");
 
             public static readonly int _FullscreenProjMat = Shader.PropertyToID("_FullscreenProjMat");
+            
+            
 
             public static int[] _BloomMipUp;
             public static int[] _BloomMipDown;

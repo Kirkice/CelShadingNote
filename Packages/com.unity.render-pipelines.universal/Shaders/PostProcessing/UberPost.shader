@@ -10,6 +10,7 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
         #pragma multi_compile_local_fragment _ _GAMMA_20 _LINEAR_TO_SRGB_CONVERSION
         #pragma multi_compile_local_fragment _ _USE_FAST_SRGB_LINEAR_CONVERSION
         #pragma multi_compile_local_fragment _ _ENABLE_ALPHA_OUTPUT
+        #pragma multi_compile_fragment _ _USE_BW_FLASH
         #include_with_pragmas "Packages/com.unity.render-pipelines.core/ShaderLibrary/FoveatedRenderingKeywords.hlsl"
         #pragma multi_compile_fragment _ DEBUG_DISPLAY
         #pragma multi_compile_fragment _ SCREEN_COORD_OVERRIDE
@@ -27,7 +28,7 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
         #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/HDROutput.hlsl"
 #endif
 
-        #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+        #include "Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/UberPostUtils.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/Shaders/PostProcessing/Common.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Debug/DebuggingFullscreen.hlsl"
         #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/DynamicScalingClamping.hlsl"
@@ -69,7 +70,7 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
         float4 _Bloom_Texture_TexelSize;
         float4 _Dithering_Params;
         float4 _HDROutputLuminanceParams;
-
+        
         #define DistCenter              _Distortion_Params1.xy
         #define DistAxis                _Distortion_Params1.zw
         #define DistTheta               _Distortion_Params2.x
@@ -155,6 +156,9 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
             // NOTE: Hlsl specifies missing input.a to fill 1 (0 for .rgb).
             // InputColor is a "bottom" layer for alpha output.
             half4 inputColor = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, ClampUVForBilinear(SCREEN_COORD_REMOVE_SCALEBIAS(uvDistorted), _BlitTexture_TexelSize.xy));
+
+            inputColor = ApplyBWFlash(ClampUVForBilinear(SCREEN_COORD_REMOVE_SCALEBIAS(uvDistorted)), _BlitTexture, sampler_LinearClamp);
+            return inputColor;
             half3 color = inputColor.rgb;
 
             #if _CHROMATIC_ABERRATION
@@ -255,7 +259,7 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
                 color = ApplyGrain(color, uv, TEXTURE2D_ARGS(_Grain_Texture, sampler_LinearRepeat), GrainIntensity, GrainResponse, GrainScale, GrainOffset, OneOverPaperWhite);
             }
             #endif
-
+            
             // When Unity is configured to use gamma color encoding, we ignore the request to convert to gamma 2.0 and instead fall back to sRGB encoding
             #if _GAMMA_20 && !UNITY_COLORSPACE_GAMMA
             {
