@@ -70,7 +70,15 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
         float4 _Bloom_Texture_TexelSize;
         float4 _Dithering_Params;
         float4 _HDROutputLuminanceParams;
-        
+
+        float4 _DarkColor;
+        float4 _LightColor;
+        float2 _BW_Center;
+        float _BW_Intensity;
+        float _BW_Contrast;
+        float _BW_Ratio;
+        float _BW_Reversal;
+    
         #define DistCenter              _Distortion_Params1.xy
         #define DistAxis                _Distortion_Params1.zw
         #define DistTheta               _Distortion_Params2.x
@@ -157,8 +165,8 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
             // InputColor is a "bottom" layer for alpha output.
             half4 inputColor = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, ClampUVForBilinear(SCREEN_COORD_REMOVE_SCALEBIAS(uvDistorted), _BlitTexture_TexelSize.xy));
 
-            inputColor = ApplyBWFlash(ClampUVForBilinear(SCREEN_COORD_REMOVE_SCALEBIAS(uvDistorted)), _BlitTexture, sampler_LinearClamp);
-            return inputColor;
+            // inputColor = ApplyBWFlash(ClampUVForBilinear(SCREEN_COORD_REMOVE_SCALEBIAS(uvDistorted)), _BlitTexture, sampler_LinearClamp);
+            // return _DarkColor;
             half3 color = inputColor.rgb;
 
             #if _CHROMATIC_ABERRATION
