@@ -28,8 +28,8 @@
 /XluaSec.csproj
 /Assembly-CSharp-firstpass.csproj
 /Assets/StreamingAssets/*
-/Assets/MMD4Mecanim
-/Assets/MMD4Mecanim/*
+/Assets/Tools/MMD4Mecanim
+/Assets/Tools/MMD4Mecanim/*
 /Assets/NatureManufacture Assets/Ice World/Textures/*
 
 /NavMeshComponents.csproj
