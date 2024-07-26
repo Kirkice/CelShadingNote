@@ -24,6 +24,10 @@ namespace UnityEngine.Rendering.Universal
         /// Note that if you use this tonemapper all the grading operations will be done in the ACES color spaces for optimal precision and results.
         /// </summary>
         ACES, // ACES Filmic reference tonemapper (custom approximation)
+        
+        
+        
+        GranTurismo,//  GranTurismo tonemapper
     }
 
     /// <summary>

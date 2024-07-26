@@ -168,6 +168,7 @@ namespace UnityEditor.Rendering.Universal
         LocalKeyword m_BloomLQDirt;
         LocalKeyword m_BloomHQDirt;
         LocalKeyword m_HdrGrading;
+        LocalKeyword m_ToneMapGranTurismo;
         LocalKeyword m_ToneMapACES;
         LocalKeyword m_ToneMapNeutral;
         LocalKeyword m_FilmGrain;
@@ -240,6 +241,7 @@ namespace UnityEditor.Rendering.Universal
             m_BloomLQDirt = TryGetLocalKeyword(shader, ShaderKeywordStrings.BloomLQDirt);
             m_BloomHQDirt = TryGetLocalKeyword(shader, ShaderKeywordStrings.BloomHQDirt);
             m_HdrGrading = TryGetLocalKeyword(shader, ShaderKeywordStrings.HDRGrading);
+            m_ToneMapGranTurismo = TryGetLocalKeyword(shader, ShaderKeywordStrings.TonemapGranTurismo);
             m_ToneMapACES = TryGetLocalKeyword(shader, ShaderKeywordStrings.TonemapACES);
             m_ToneMapNeutral = TryGetLocalKeyword(shader, ShaderKeywordStrings.TonemapNeutral);
             m_FilmGrain = TryGetLocalKeyword(shader, ShaderKeywordStrings.FilmGrain);
@@ -277,6 +279,9 @@ namespace UnityEditor.Rendering.Universal
             if (stripTool.StripMultiCompileKeepOffVariant(m_BloomHQDirt, VolumeFeatures.BloomHQDirt))
                 return true;
 
+            if (stripTool.StripMultiCompileKeepOffVariant(m_ToneMapGranTurismo, VolumeFeatures.ToneMapping))
+                return true;
+            
             if (stripTool.StripMultiCompileKeepOffVariant(m_ToneMapACES, VolumeFeatures.ToneMapping))
                 return true;
 

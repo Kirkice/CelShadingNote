@@ -30,6 +30,13 @@ namespace UnityEditor.Rendering.Universal
             public static readonly GUIContent ShadowNormalBias = EditorGUIUtility.TrTextContent("Normal", "Determines the bias this Light applies along the normal of surfaces it illuminates. This is ignored for point lights.");
             public static readonly GUIContent ShadowDepthBias = EditorGUIUtility.TrTextContent("Depth", "Determines the bias at which shadows are pushed away from the shadow-casting Game Object along the line from the Light.");
             public static readonly GUIContent ShadowInfo = EditorGUIUtility.TrTextContent("Unity might reduce the Light's shadow resolution to ensure that shadow maps fit in the shadow atlas. Consider this when selecting the the size of the shadow atlas, the shadow resolution of Lights, the number of Lights in your scene and whether you use soft shadows.");
+            
+            //  custom shadow bound
+            public static readonly GUIContent UseCustomShadowBoundText = EditorGUIUtility.TrTextContent("Custom Bound", "开启自定义阴影包围球.");
+            public static readonly GUIContent CustomShadowBoundSpherePositionText = EditorGUIUtility.TrTextContent("Bound Position", "包围盒坐标.");
+            public static readonly GUIContent CustomShadowBoundSphereRadiusText = EditorGUIUtility.TrTextContent("Bound Radius", "包围盒半径.");
+            public static readonly GUIContent DrawCustomShadowBoundGizmosText = EditorGUIUtility.TrTextContent("Bound Gizmos", "绘制包围盒Gizmos.");
+            public static readonly GUIContent BoundRootText = EditorGUIUtility.TrTextContent("Bound Root", "包围盒挂载节点.");
 
             // Resolution (default or custom)
             public static readonly GUIContent ShadowResolution = EditorGUIUtility.TrTextContent("Resolution", $"Sets the rendered resolution of the shadow maps. A higher resolution increases the fidelity of shadows at the cost of GPU performance and memory usage. Rounded to the next power of two, and clamped to be at least {UniversalAdditionalLightData.AdditionalLightsShadowMinimumResolution}.");

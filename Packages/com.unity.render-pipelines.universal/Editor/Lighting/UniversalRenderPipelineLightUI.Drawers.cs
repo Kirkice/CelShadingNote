@@ -348,6 +348,11 @@ namespace UnityEditor.Rendering.Universal
                         // this min bound should match the calculation in SharedLightData::GetNearPlaneMinBound()
                         float nearPlaneMinBound = Mathf.Min(0.01f * serializedLight.settings.range.floatValue, 0.1f);
                         EditorGUILayout.Slider(serializedLight.settings.shadowsNearPlane, nearPlaneMinBound, 10.0f, Styles.ShadowNearPlane);
+                        
+                        // Custom Shadow Bound
+                        DrawCustomShadowBound(serializedLight);
+                        EditorGUILayout.Space(5);
+                        
                         var isHololens = false;
                         var isQuest = false;
 #if XR_MANAGEMENT_4_0_1_OR_NEWER
@@ -453,7 +458,23 @@ namespace UnityEditor.Rendering.Universal
                 }
             }
         }
-
+        static void DrawCustomShadowBound(UniversalRenderPipelineSerializedLight serializedLight)
+        {
+            EditorGUILayout.PropertyField(serializedLight.useCustomShadowBoundProp, Styles.UseCustomShadowBoundText);
+            if(serializedLight.useCustomShadowBoundProp.boolValue)
+            {
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    var str = "CustomBound不支持级联阴影,请关闭级联阴影.";
+                    EditorGUILayout.HelpBox(str, MessageType.Warning);
+                    EditorGUILayout.PropertyField(serializedLight.boundRootProp, Styles.BoundRootText);
+                    EditorGUILayout.PropertyField(serializedLight.customShadowBoundSpherePositionProp,Styles.CustomShadowBoundSpherePositionText);
+                    EditorGUILayout.PropertyField(serializedLight.customShadowBoundSphereRadiusProp, Styles.CustomShadowBoundSphereRadiusText);
+                    EditorGUILayout.PropertyField(serializedLight.drawCustomShadowBoundGizmosProp, Styles.DrawCustomShadowBoundGizmosText);
+                }
+            }
+        }
+        
         static void DrawShadowsResolutionGUI(UniversalRenderPipelineSerializedLight serializedLight)
         {
             int shadowResolutionTier = serializedLight.additionalLightData.additionalLightsShadowResolutionTier;
