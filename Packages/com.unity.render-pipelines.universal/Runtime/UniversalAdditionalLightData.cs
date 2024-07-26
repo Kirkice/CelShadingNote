@@ -68,6 +68,13 @@ namespace UnityEngine.Rendering.Universal
 
         [Tooltip("Controls if light Shadow Bias parameters use pipeline settings.")]
         [SerializeField] bool m_UsePipelineSettings = true;
+        
+        // Custom Shadow Bound
+        [SerializeField] bool m_UseCustomShadowBound = false;
+        [SerializeField] public Transform m_BoundRoot = null;
+        [SerializeField] public Vector3 m_CustomShadowBoundSpherePosition = Vector3.zero;
+        [SerializeField] public float m_CustomShadowBoundSphereRadius = 1.0f;
+        [SerializeField] public bool m_DrawCustomShadowBoundGizmos = false;
 
         /// <summary>
         /// Controls if light Shadow Bias parameters use pipeline settings or not.
@@ -78,6 +85,36 @@ namespace UnityEngine.Rendering.Universal
             set { m_UsePipelineSettings = value; }
         }
 
+        public bool useCustomShadowBound
+        {
+            get { return m_UseCustomShadowBound; }
+            set { m_UseCustomShadowBound = value; }
+        }
+        
+        public Vector3 customShadowBoundSpherePosition
+        {
+            get { return m_CustomShadowBoundSpherePosition; }
+            set { m_CustomShadowBoundSpherePosition = value; }
+        }
+        
+        public float customShadowBoundSphereRadius
+        {
+            get { return m_CustomShadowBoundSphereRadius; }
+            set { m_CustomShadowBoundSphereRadius = value; }
+        }
+        
+        public bool drawCustomShadowBoundGizmos
+        {
+            get { return m_DrawCustomShadowBoundGizmos; }
+            set { m_DrawCustomShadowBoundGizmos = value; }
+        }
+
+        public Transform boundRoot
+        {
+            get { return m_BoundRoot; }
+            set { m_BoundRoot = value; }
+        }
+        
         /// <summary>
         /// Value used to indicate custom shadow resolution tier for additional lights.
         /// </summary>
@@ -267,6 +304,18 @@ namespace UnityEngine.Rendering.Universal
         }
         [SerializeField] private SoftShadowQuality m_SoftShadowQuality = SoftShadowQuality.UsePipelineSettings;
 
+        private void OnDrawGizmos()
+        {
+            if (drawCustomShadowBoundGizmos)
+            {
+                Gizmos.color = new Color(0.2f, 1, 0.2f, 0.7f);
+
+                float scale = m_BoundRoot == null ? 1 : m_BoundRoot.lossyScale.x;
+                Vector3 rootPos = m_BoundRoot == null ? Vector3.zero : m_BoundRoot.position;
+                Gizmos.DrawSphere(customShadowBoundSpherePosition * scale + rootPos, customShadowBoundSphereRadius * scale);
+            }
+        }
+        
         /// <inheritdoc/>
         public void OnBeforeSerialize()
         {

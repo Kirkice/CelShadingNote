@@ -76,12 +76,12 @@ real4 LinearToGamma22(real4 c)
 // sRGB
 real SRGBToLinear(real c)
 {
-#if defined(UNITY_COLORSPACE_GAMMA) && REAL_IS_HALF
+    #if defined(UNITY_COLORSPACE_GAMMA) && REAL_IS_HALF
     c = min(c, 100.0); // Make sure not to exceed HALF_MAX after the pow() below
-#endif
-    real linearRGBLo  = c / 12.92;
-    real linearRGBHi  = PositivePow((c + 0.055) / 1.055, real(2.4));
-    real linearRGB    = (c <= 0.04045) ? linearRGBLo : linearRGBHi;
+    #endif
+    real linearRGBLo = c / 12.92;
+    real linearRGBHi = PositivePow((c + 0.055) / 1.055, real(2.4));
+    real linearRGB = (c <= 0.04045) ? linearRGBLo : linearRGBHi;
     return linearRGB;
 }
 
@@ -244,7 +244,7 @@ real YCoCgCheckBoardEdgeFilter(real centerLum, real2 a0, real2 a1, real2 a2, rea
     real4 w = 1.0 - saturate((abs(lum.xxxx - centerLum) - 30.0 / 255.0) * HALF_MAX);
     real W = w.x + w.y + w.z + w.w;
     // handle the special case where all the weights are zero.
-    return  (W == 0.0) ? a0.y : (w.x * a0.y + w.y* a1.y + w.z* a2.y + w.w * a3.y) / W;
+    return (W == 0.0) ? a0.y : (w.x * a0.y + w.y * a1.y + w.z * a2.y + w.w * a3.y) / W;
 }
 
 // Converts linear RGB to LMS
@@ -265,8 +265,8 @@ float3 LMSToLinear(float3 x)
 {
     const real3x3 LMS_2_LIN_MAT = {
         2.85847e+0, -1.62879e+0, -2.48910e-2,
-        -2.10182e-1,  1.15820e+0,  3.24281e-4,
-        -4.18120e-2, -1.18169e-1,  1.06867e+0
+        -2.10182e-1, 1.15820e+0, 3.24281e-4,
+        -4.18120e-2, -1.18169e-1, 1.06867e+0
     };
 
     return mul(LMS_2_LIN_MAT, x);
@@ -297,10 +297,10 @@ real3 HsvToRgb(real3 c)
 real RotateHue(real value, real low, real hi)
 {
     return (value < low)
-            ? value + hi
-            : (value > hi)
-                ? value - hi
-                : value;
+               ? value + hi
+               : (value > hi)
+               ? value - hi
+               : value;
 }
 
 // CIE xyY to CIE 1931 XYZ
@@ -354,7 +354,7 @@ static const ParamsLogC LogC =
     0.244161, // c
     0.386036, // d
     5.301883, // e
-    0.092819  // f
+    0.092819 // f
 };
 
 real LinearToLogC_Precise(real x)
@@ -370,15 +370,15 @@ real LinearToLogC_Precise(real x)
 // Full float precision to avoid precision artefact when using ACES tonemapping
 float3 LinearToLogC(float3 x)
 {
-#if USE_PRECISE_LOGC
+    #if USE_PRECISE_LOGC
     return real3(
         LinearToLogC_Precise(x.x),
         LinearToLogC_Precise(x.y),
         LinearToLogC_Precise(x.z)
     );
-#else
+    #else
     return LogC.c * log10(max(LogC.a * x + LogC.b, 0.0)) + LogC.d;
-#endif
+    #endif
 }
 
 real LogCToLinear_Precise(real x)
@@ -394,15 +394,15 @@ real LogCToLinear_Precise(real x)
 // Full float precision to avoid precision artefact when using ACES tonemapping
 float3 LogCToLinear(float3 x)
 {
-#if USE_PRECISE_LOGC
+    #if USE_PRECISE_LOGC
     return real3(
         LogCToLinear_Precise(x.x),
         LogCToLinear_Precise(x.y),
         LogCToLinear_Precise(x.z)
     );
-#else
+    #else
     return (pow(10.0, (x - LogC.d) / LogC.c) - LogC.b) / LogC.a;
-#endif
+    #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -413,8 +413,8 @@ real3 Desaturate(real3 value, real saturation)
 {
     // Saturation = Colorfulness / Brightness.
     // https://munsell.com/color-blog/difference-chroma-saturation/
-    real  mean = Avg3(value.r, value.g, value.b);
-    real3 dev  = value - mean;
+    real mean = Avg3(value.r, value.g, value.b);
+    real3 dev = value - mean;
 
     return mean + dev * saturation;
 }
@@ -544,9 +544,9 @@ real3 NeutralTonemap(real3 x)
     const real whiteLevel = 5.3;
     const real whiteClip = 1.0;
 
-#if REAL_IS_HALF
+    #if REAL_IS_HALF
     x = min(x, TONEMAPPING_CLAMP_MAX);
-#endif
+    #endif
 
     real3 whiteScale = (1.0).xxx / NeutralCurve(whiteLevel, a, b, c, d, e, f);
     x = NeutralCurve(x * whiteScale, a, b, c, d, e, f);
@@ -558,23 +558,76 @@ real3 NeutralTonemap(real3 x)
     return x;
 }
 
+inline float W_f(float x, float e0, float e1)
+{
+    if (x <= e0)
+        return 0;
+    if (x >= e1)
+        return 1;
+    float a = (x - e0) / (e1 - e0);
+    return a * a * (3 - 2 * a);
+}
+
+inline float H_f(float x, float e0, float e1)
+{
+    if (x <= e0)
+        return 0;
+    if (x >= e1)
+        return 1;
+    return (x - e0) / (e1 - e0);
+}
+
+inline float GranTurismoTonemapper(float x)
+{
+    float e = 2.71828;
+    float P = 1;
+    float a = 1;
+    float m = 0.22;
+    float l = 0.4;
+    float c = 1.33;
+    float b = 0;
+    float l0 = (P - m) * l / a;
+    float L0 = m - m / a;
+    float L1 = m + (1 - m) / a;
+    float L_x = m + a * (x - m);
+    float T_x = m * pow(x / m, c) + b;
+    float S0 = m + l0;
+    float S1 = m + a * l0;
+    float C2 = a * P / (P - S1);
+    float S_x = P - (P - S1) * pow(e, -(C2 * (x - S0) / P));
+    float w0_x = 1 - W_f(x, 0, m);
+    float w2_x = H_f(x, m + l0, m + l0);
+    float w1_x = 1 - w0_x - w2_x;
+    float f_x = T_x * w0_x + L_x * w1_x + S_x * w2_x;
+    return f_x;
+}
+
+real3 GranTurismoTonemap(real3 x)
+{
+    float r = GranTurismoTonemapper(x.r);
+    float g = GranTurismoTonemapper(x.g);
+    float b = GranTurismoTonemapper(x.b);
+    return real3(r,g,b);
+}
+
 // Raw, unoptimized version of John Hable's artist-friendly tone curve
 // Input is linear RGB
 real EvalCustomSegment(real x, real4 segmentA, real2 segmentB)
 {
     const real kOffsetX = segmentA.x;
     const real kOffsetY = segmentA.y;
-    const real kScaleX  = segmentA.z;
-    const real kScaleY  = segmentA.w;
-    const real kLnA     = segmentB.x;
-    const real kB       = segmentB.y;
+    const real kScaleX = segmentA.z;
+    const real kScaleY = segmentA.w;
+    const real kLnA = segmentB.x;
+    const real kB = segmentB.y;
 
     real x0 = (x - kOffsetX) * kScaleX;
     real y0 = (x0 > 0.0) ? exp(kLnA + kB * log(x0)) : 0.0;
     return y0 * kScaleY + kOffsetY;
 }
 
-real EvalCustomCurve(real x, real3 curve, real4 toeSegmentA, real2 toeSegmentB, real4 midSegmentA, real2 midSegmentB, real4 shoSegmentA, real2 shoSegmentB)
+real EvalCustomCurve(real x, real3 curve, real4 toeSegmentA, real2 toeSegmentB, real4 midSegmentA, real2 midSegmentB,
+                     real4 shoSegmentA, real2 shoSegmentB)
 {
     real4 segmentA;
     real2 segmentB;
@@ -599,13 +652,17 @@ real EvalCustomCurve(real x, real3 curve, real4 toeSegmentA, real2 toeSegmentB, 
 }
 
 // curve: x: inverseWhitePoint, y: x0, z: x1
-real3 CustomTonemap(real3 x, real3 curve, real4 toeSegmentA, real2 toeSegmentB, real4 midSegmentA, real2 midSegmentB, real4 shoSegmentA, real2 shoSegmentB)
+real3 CustomTonemap(real3 x, real3 curve, real4 toeSegmentA, real2 toeSegmentB, real4 midSegmentA, real2 midSegmentB,
+                    real4 shoSegmentA, real2 shoSegmentB)
 {
     real3 normX = x * curve.x;
     real3 ret;
-    ret.x = EvalCustomCurve(normX.x, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA, shoSegmentB);
-    ret.y = EvalCustomCurve(normX.y, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA, shoSegmentB);
-    ret.z = EvalCustomCurve(normX.z, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA, shoSegmentB);
+    ret.x = EvalCustomCurve(normX.x, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA,
+                            shoSegmentB);
+    ret.y = EvalCustomCurve(normX.y, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA,
+                            shoSegmentB);
+    ret.z = EvalCustomCurve(normX.z, curve, toeSegmentA, toeSegmentB, midSegmentA, midSegmentB, shoSegmentA,
+                            shoSegmentB);
     return ret;
 }
 
@@ -631,13 +688,13 @@ real3 InvertibleTonemapInverse(real3 x)
 
 float3 AcesTonemap(float3 aces)
 {
-#if TONEMAPPING_USE_FULL_ACES
+    #if TONEMAPPING_USE_FULL_ACES
 
     float3 oces = RRT(half3(aces));
     float3 odt = ODT_RGBmonitor_100nits_dim(oces);
     return odt;
 
-#else
+    #else
 
     // --- Glow module --- //
     half saturation = rgb_2_saturation(half3(aces));
@@ -673,17 +730,17 @@ float3 AcesTonemap(float3 aces)
     const float d = 0.4329510f;
     const float e = 0.238081f;
 
-#if defined(SHADER_API_SWITCH)
+    #if defined(SHADER_API_SWITCH)
     // To reduce the likelyhood of extremely large values, we avoid using the x^2 term and therefore
     // divide numerator and denominator by it. This will lead to the constant factors of the
     // quadratic in the numerator and denominator to be divided by x; we add a tiny epsilon to avoid divide by 0.
     float3 rcpAcesCG = rcp(acescg + FLT_MIN);
     float3 rgbPost = (acescg + a - b * rcpAcesCG) /
         (acescg * c + d + e * rcpAcesCG);
-#else
+    #else
     float3 rgbPost = (acescg * (acescg + a) - b) /
         (acescg * (c * acescg + d) + e);
-#endif
+    #endif
 
     // Scale luminance to linear code value
     // float3 linearCV = Y_2_linCV(rgbPost, CINEMA_WHITE, CINEMA_BLACK);
@@ -707,7 +764,7 @@ float3 AcesTonemap(float3 aces)
 
     return linearCV;
 
-#endif
+    #endif
 }
 
 // RGBM encode/decode

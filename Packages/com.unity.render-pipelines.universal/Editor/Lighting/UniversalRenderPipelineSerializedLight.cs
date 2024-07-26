@@ -28,6 +28,13 @@ namespace UnityEditor.Rendering.Universal
         public SerializedProperty renderingLayers { get; }
         public SerializedProperty customShadowLayers { get; }
         public SerializedProperty shadowRenderingLayers { get; }
+        
+        public SerializedProperty useCustomShadowBoundProp { get; }
+        public SerializedProperty customShadowBoundSpherePositionProp { get; }
+        public SerializedProperty customShadowBoundSphereRadiusProp { get; }
+        public SerializedProperty drawCustomShadowBoundGizmosProp { get; }
+        public SerializedProperty boundRootProp { get; }
+
 
         /// <summary>Method that updates the <see cref="SerializedObject"/> of the Light and the Additional Light Data</summary>
         public void Update()
@@ -70,6 +77,12 @@ namespace UnityEditor.Rendering.Universal
             renderingLayers = serializedAdditionalDataObject.FindProperty("m_RenderingLayers");
             customShadowLayers = serializedAdditionalDataObject.FindProperty("m_CustomShadowLayers");
             shadowRenderingLayers = serializedAdditionalDataObject.FindProperty("m_ShadowRenderingLayers");
+
+            useCustomShadowBoundProp = serializedAdditionalDataObject.FindProperty("m_UseCustomShadowBound");
+            customShadowBoundSpherePositionProp = serializedAdditionalDataObject.FindProperty("m_CustomShadowBoundSpherePosition");
+            customShadowBoundSphereRadiusProp = serializedAdditionalDataObject.FindProperty("m_CustomShadowBoundSphereRadius");
+            drawCustomShadowBoundGizmosProp = serializedAdditionalDataObject.FindProperty("m_DrawCustomShadowBoundGizmos");
+            boundRootProp = serializedAdditionalDataObject.FindProperty("m_BoundRoot");
 
             settings.ApplyModifiedProperties();
         }
