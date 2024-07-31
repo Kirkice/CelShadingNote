@@ -34,21 +34,21 @@ Shader "mingchao/character/body"
         }
 
         //	01 OutLine Pass
-        pass
-        {
-            Name "OutLine"
-            Tags
-            {
-                "LightMode" = "OutLine"
-            }
-
-            Cull Front
-            HLSLPROGRAM
-            #include "mc_outline_pass.hlsl"
-            #pragma vertex VSOutline
-            #pragma fragment PSSkinOutline
-            ENDHLSL
-        }
+//        pass
+//        {
+//            Name "OutLine"
+//            Tags
+//            {
+//                "LightMode" = "OutLine"
+//            }
+//
+//            Cull Front
+//            HLSLPROGRAM
+//            #include "mc_outline_pass.hlsl"
+//            #pragma vertex VSOutline
+//            #pragma fragment PSSkinOutline
+//            ENDHLSL
+//        }
         
         //	02 ForwardRender Pass
         pass

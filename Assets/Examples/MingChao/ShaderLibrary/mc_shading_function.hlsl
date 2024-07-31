@@ -2,6 +2,28 @@
 #define MC_FUNCTION_INCLUDED
 #include "mc_shader_input.hlsl"
 
+inline float3 DecodeSmoothNormalTangentSpace(float2 uv2, float4 T, float3 N)
+{
+    float3 B = cross(N,T.xyz) * T.w;
+    float3x3 TBN = float3x3(
+        T.x,B.x,N.x,
+        T.y,B.y,N.y,
+        T.z,B.z,N.z
+    );
+
+    float2 uv = uv2 * 2 - 1;
+    float3 normal = float3(uv, 1 - sqrt(1 - dot(uv,uv)));
+    return mul(TBN, normal);
+}
+
+inline float3 DecodeSmoothNormalObjectSpace(float2 uv2)
+{
+
+    float2 uv = uv2 * 2 - 1;
+    float3 normal = float3(uv, sqrt(1 - dot(uv,uv)));
+    return normal;
+}
+
 //  获取描边宽度
 inline float GetOutlineWidth(float positionVS_Z)
 {
@@ -16,18 +38,17 @@ inline float GetOutlineWidth(float positionVS_Z)
 }
 
 //  获取描边坐标
-inline float4 GetOutlinePosition(float3 positionVS, float3 N, half4 vertexColor)
+inline float4 GetOutlinePosition(float4 PosL, float3 N)
 {
-    float z = positionVS.z;
+    float3 PosW = TransformObjectToWorld(PosL);
+    float z = TransformWorldToView(float4(PosW,1)).z;
     float width = GetOutlineWidth(z);// * vertexColor.a;
-
-    half3 normalVS = TransformWorldToViewNormal(N);
-    normalVS = SafeNormalize(half3(normalVS.xz, 0.0));
-
-    positionVS += 0.1 * _OutlineZOffset * SafeNormalize(positionVS);
-    positionVS += width * normalVS;
-
-    float4 positionCS = TransformWViewToHClip(positionVS);
+    PosL.xyz = PosL.xyz + N * width;
+    
+    float3 PosV = TransformWorldToView(float4(TransformObjectToWorld(PosL),1));
+    PosV += 0.1 * _OutlineZOffset * SafeNormalize(PosV);
+    
+    float4 positionCS = TransformWViewToHClip(PosV);
     positionCS.xy += _ScreenOffset.zw * positionCS.w;
 
     return positionCS;

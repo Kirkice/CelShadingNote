@@ -6,8 +6,9 @@ struct outline_data
 {
     float4 vertex : POSITION;
     float2 texcoord0 : TEXCOORD0;
+    float2 texcoord1 : TEXCOORD1;
     float3 normal : NORMAL;
-    float3 tangent : TANGENT;
+    float4 tangent : TANGENT;
     float4 color : COLOR;
 };
 
@@ -21,11 +22,13 @@ struct v2f_outline
 v2f_outline VSOutline(outline_data v)
 {
     v2f_outline o = (v2f_outline)0;
-    float3 PosW = TransformObjectToWorld(v.vertex);
-    float3 N = TransformObjectToWorld(v.normal);
-    float4 positionCS = GetOutlinePosition(TransformWorldToView(PosW), N, v.color);
+    float2 uv = v.texcoord1 * 2 - 1;
+    float3 normal = float3(uv, sqrt(1 - dot(uv,uv)));
+    
+    float3 N = v.tangent;
+    float4 positionCS = GetOutlinePosition(v.vertex, N);
     o.PosH = positionCS;
-    o.VColor = v.color;
+    o.VColor.rgb = N.xyz;
     o.VColor.a = v.color.x;
     o.uv0 = v.texcoord0;
     return o;

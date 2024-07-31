@@ -91,12 +91,6 @@ public static class FbxMeshNormalProcessor
 
     static void SmoothMeshNode(FbxMesh fbxMesh, ChannelType type, ObjectSpace space)
     {
-        float3x3 rot_x_mat = new float3x3(
-            1, 0, 0,
-            0, -1, 0,
-            0, 0, -1
-        );
-        
         int controlPointsCount = fbxMesh.GetControlPointsCount();
         List<List<VertexInfo>> controlIndexToVertexInfos = new List<List<VertexInfo>>();
         for (int i = 0; i < controlPointsCount; i++)
@@ -198,7 +192,7 @@ public static class FbxMeshNormalProcessor
                     }
                     else
                     {
-                        vcolor = math.mul(rot_x_mat, new float3(-(float)smoothNormal.X, -(float)smoothNormal.Y, -(float)smoothNormal.Z));
+                        vcolor = new float3((float)smoothNormal.X,(float)smoothNormal.Y,(float)smoothNormal.Z);
                     }
                     uvDirectArray.SetAt(vertexInfo.vertexIndex, new FbxVector2(vcolor.x * 0.5f + 0.5f,vcolor.y * 0.5f + 0.5f));
                 }
@@ -251,7 +245,7 @@ public static class FbxMeshNormalProcessor
                     }
                     else
                     {
-                        vcolor = math.mul(rot_x_mat, new float3(-(float)smoothNormal.X, -(float)smoothNormal.Y, -(float)smoothNormal.Z));
+                        vcolor = new float3((float)smoothNormal.X,(float)smoothNormal.Y,(float)smoothNormal.Z);
                     }
                     colorDirectArray.SetAt(vertexInfo.vertexIndex, new FbxColor(vcolor.x * 0.5f + 0.5f,vcolor.y * 0.5f + 0.5f,vcolor.z * 0.5f + 0.5f,1));
                 }
