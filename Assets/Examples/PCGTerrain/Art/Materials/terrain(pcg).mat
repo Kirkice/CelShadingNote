@@ -30,11 +30,12 @@ Material:
     - _Contrast: 3.44
     - _EdgeFactor: 30
     - _InsideFactor: 30
-    - _MaxHeight: 2
+    - _MaxHeight: 1.92
     - _Outputtopology: 0
     - _Partitioning: 0
-    - _TerrainPower: 3.76
-    - _TerrainStrength: 5.05
-    m_Colors: []
+    - _TerrainPower: 1
+    - _TerrainStrength: 1
+    m_Colors:
+    - _TerrainTillingOffset: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

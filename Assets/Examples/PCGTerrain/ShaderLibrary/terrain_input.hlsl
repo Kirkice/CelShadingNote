@@ -8,79 +8,106 @@
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
 // 纹理
-TEXTURE2D(_Albedo0);
-SAMPLER(sampler_Albedo0);
-uniform float4 _Albedo0_ST;
+TEXTURECUBE(_SkyboxCube);
+SAMPLER(sampler_SkyboxCube);
+
+TEXTURE2D(_AlbedoTex0);
+SAMPLER(sampler_AlbedoTex0);
+uniform float4 _AlbedoTex0_ST;
 
 TEXTURE2D(_NormalTex0);
 SAMPLER(sampler_NormalTex0);
-uniform float4 _NormalTex0_ST;
 
-TEXTURE2D(_MsoTex0);
-SAMPLER(sampler_MsoTex0);
-uniform float4 _MsoTex0_ST;
+TEXTURE2D(_TangentTex0);
+SAMPLER(sampler_TangentTex0);
 
-TEXTURE2D(_Albedo1);
-SAMPLER(sampler_Albedo1);
-uniform float4 _Albedo1_ST;
+TEXTURE2D(_RoughnessTex0);
+SAMPLER(sampler_RoughnessTex0);
+
+
+
+
+TEXTURE2D(_AlbedoTex1);
+SAMPLER(sampler_AlbedoTex1);
+uniform float4 _AlbedoTex1_ST;
 
 TEXTURE2D(_NormalTex1);
 SAMPLER(sampler_NormalTex1);
-uniform float4 _NormalTex1_ST;
 
-TEXTURE2D(_MsoTex1);
-SAMPLER(sampler_MsoTex1);
-uniform float4 _MsoTex1_ST;
+TEXTURE2D(_TangentTex1);
+SAMPLER(sampler_TangentTex1);
 
-TEXTURE2D(_Albedo2);
-SAMPLER(sampler_Albedo2);
-uniform float4 _Albedo2_ST;
+TEXTURE2D(_RoughnessTex1);
+SAMPLER(sampler_RoughnessTex1);
+
+
+
+
+TEXTURE2D(_AlbedoTex2);
+SAMPLER(sampler_AlbedoTex2);
+uniform float4 _AlbedoTex2_ST;
 
 TEXTURE2D(_NormalTex2);
 SAMPLER(sampler_NormalTex2);
-uniform float4 _NormalTex2_ST;
 
-TEXTURE2D(_MsoTex2);
-SAMPLER(sampler_MsoTex2);
-uniform float4 _MsoTex2_ST;
+TEXTURE2D(_TangentTex2);
+SAMPLER(sampler_TangentTex2);
+
+TEXTURE2D(_RoughnessTex2);
+SAMPLER(sampler_RoughnessTex2);
 
 CBUFFER_START(UnityPerMaterial)
-uniform half _Metallic0;
-uniform half _Subsurface0;
-uniform half _Specular0;
-uniform half _Roughness0;
-uniform half _SpecularTint0;
-uniform half _Anisotropic0;
-uniform half _Sheen0;
-uniform half _SheenTint0;
-uniform half _ClearCoat0;
-uniform half _ClearCoatGloss0;
 
-uniform half _Metallic1;
-uniform half _Subsurface1;
-uniform half _Specular1;
-uniform half _Roughness1;
-uniform half _SpecularTint1;
-uniform half _Anisotropic1;
-uniform half _Sheen1;
-uniform half _SheenTint1;
-uniform half _ClearCoat1;
-uniform half _ClearCoatGloss1;
+uniform float3 _BaseColor0;
+uniform float _NormalStrength0;
+uniform float _Roughness0;
+uniform float _Metallic0;
+uniform float _Subsurface0;
+uniform float _Specular0;
+uniform float _SpecularTint0;
+uniform float _Anisotropic0;
+uniform float _Sheen0;
+uniform float _SheenTint0;
+uniform float _ClearCoat0;
+uniform float _ClearCoatGloss0;
+uniform float _RoughnessMapMod0;
+uniform float _IndirectF0_0;
+uniform float _IndirectF90_0;
 
-uniform half _Metallic2;
-uniform half _Subsurface2;
-uniform half _Specular2;
-uniform half _Roughness2;
-uniform half _SpecularTint2;
-uniform half _Anisotropic2;
-uniform half _Sheen2;
-uniform half _SheenTint2;
-uniform half _ClearCoat2;
-uniform half _ClearCoatGloss2;
+uniform float3 _BaseColor1;
+uniform float _NormalStrength1;
+uniform float _Roughness1;
+uniform float _Metallic1;
+uniform float _Subsurface1;
+uniform float _Specular1;
+uniform float _SpecularTint1;
+uniform float _Anisotropic1;
+uniform float _Sheen1;
+uniform float _SheenTint1;
+uniform float _ClearCoat1;
+uniform float _ClearCoatGloss1;
+uniform float _RoughnessMapMod1;
+uniform float _IndirectF0_1;
+uniform float _IndirectF90_1;
+
+uniform float3 _BaseColor2;
+uniform float _NormalStrength2;
+uniform float _Roughness2;
+uniform float _Metallic2;
+uniform float _Subsurface2;
+uniform float _Specular2;
+uniform float _SpecularTint2;
+uniform float _Anisotropic2;
+uniform float _Sheen2;
+uniform float _SheenTint2;
+uniform float _ClearCoat2;
+uniform float _ClearCoatGloss2;
+uniform float _RoughnessMapMod2;
+uniform float _IndirectF0_2;
+uniform float _IndirectF90_2;
 
 uniform float _EdgeFactor; 
 uniform float _InsideFactor;
-
 
 uniform float _MaxHeight;
 uniform float _TerrainPower;
