@@ -75,7 +75,7 @@ Shader "Unlit/UI-Blur"
                 
                 for ( int i = 0; i < s*s; i++ ) {
                     half2 d = half2(i%s, i/s) - float(_Samples)/2.0;
-                    O += gaussian(d,sigma) * SAMPLE_TEXTURE2D( _MainTex, sampler_MainTex, U + _Scale * d);
+                    O += gaussian(d,sigma) * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, U + _Scale * d);
                 }
                 
                 return O;
