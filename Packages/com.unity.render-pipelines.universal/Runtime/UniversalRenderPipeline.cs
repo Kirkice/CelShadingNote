@@ -1437,6 +1437,7 @@ namespace UnityEngine.Rendering.Universal
                 cameraData.postProcessEnabled = CoreUtils.ArePostProcessesEnabled(camera);
                 cameraData.requiresDepthTexture = settings.supportsCameraDepthTexture;
                 cameraData.requiresOpaqueTexture = settings.supportsCameraOpaqueTexture;
+                cameraData.requireScreenTexture = settings.supportCameraScreenTexture;
                 cameraData.useScreenCoordOverride = false;
                 cameraData.screenSizeOverride = cameraData.pixelRect.size;
                 cameraData.screenCoordScaleBias = Vector2.one;
@@ -1449,6 +1450,7 @@ namespace UnityEngine.Rendering.Universal
                 cameraData.maxShadowDistance = (additionalCameraData.renderShadows) ? cameraData.maxShadowDistance : 0.0f;
                 cameraData.requiresDepthTexture = additionalCameraData.requiresDepthTexture;
                 cameraData.requiresOpaqueTexture = additionalCameraData.requiresColorTexture;
+                cameraData.requireScreenTexture = additionalCameraData.requireScreenTexture;
                 cameraData.useScreenCoordOverride = additionalCameraData.useScreenCoordOverride;
                 cameraData.screenSizeOverride = additionalCameraData.screenSizeOverride;
                 cameraData.screenCoordScaleBias = additionalCameraData.screenCoordScaleBias;
@@ -1460,6 +1462,7 @@ namespace UnityEngine.Rendering.Universal
                 cameraData.postProcessEnabled = false;
                 cameraData.requiresDepthTexture = settings.supportsCameraDepthTexture;
                 cameraData.requiresOpaqueTexture = settings.supportsCameraOpaqueTexture;
+                cameraData.requireScreenTexture = settings.supportCameraScreenTexture;
                 cameraData.useScreenCoordOverride = false;
                 cameraData.screenSizeOverride = cameraData.pixelRect.size;
                 cameraData.screenCoordScaleBias = Vector2.one;

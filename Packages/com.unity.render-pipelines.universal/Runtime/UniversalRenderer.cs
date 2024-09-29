@@ -112,6 +112,7 @@ namespace UnityEngine.Rendering.Universal
         DrawSkyboxPass m_DrawSkyboxPass;
         CopyDepthPass m_CopyDepthPass;
         CopyColorPass m_CopyColorPass;
+        GrabScreenPass m_GrabScreenPass;
         TransparentSettingsPass m_TransparentSettingsPass;
         DrawObjectsPass m_RenderTransparentForwardPass;
         InvokeOnRenderObjectCallbackPass m_OnRenderObjectCallbackPass;
@@ -143,6 +144,7 @@ namespace UnityEngine.Rendering.Universal
         RTHandle m_NormalsTexture;
         RTHandle m_DecalLayersTexture;
         RTHandle m_OpaqueColor;
+        RTHandle m_ScreenColor;
         RTHandle m_MotionVectorColor;
         RTHandle m_MotionVectorDepth;
 
@@ -324,6 +326,7 @@ namespace UnityEngine.Rendering.Universal
 
             m_DrawSkyboxPass = new DrawSkyboxPass(RenderPassEvent.BeforeRenderingSkybox);
             m_CopyColorPass = new CopyColorPass(RenderPassEvent.AfterRenderingSkybox, m_SamplingMaterial, m_BlitMaterial);
+            m_GrabScreenPass = new GrabScreenPass(RenderPassEvent.AfterRenderingTransparents, m_BlitMaterial);
 #if ADAPTIVE_PERFORMANCE_2_1_0_OR_NEWER
             if (needTransparencyPass)
 #endif
@@ -446,6 +449,7 @@ namespace UnityEngine.Rendering.Universal
             m_NormalsTexture?.Release();
             m_DecalLayersTexture?.Release();
             m_OpaqueColor?.Release();
+            m_ScreenColor?.Release();
             m_MotionVectorColor?.Release();
             m_MotionVectorDepth?.Release();
             hasReleasedRTs = true;
@@ -932,10 +936,11 @@ namespace UnityEngine.Rendering.Universal
                 ConfigureCameraColorTarget(m_ColorBufferSystem.PeekBackBuffer());
 
             bool copyColorPass = cameraData.requiresOpaqueTexture || renderPassInputs.requiresColorTexture;
+            bool grabScreenPass = cameraData.requireScreenTexture || renderPassInputs.requiresScreenTexture;
             // Check the createColorTexture logic above: intermediate color texture is not available for preview cameras.
             // Because intermediate color is not available and copyColor pass requires it, we disable CopyColor pass here.
             copyColorPass &= !isPreviewCamera;
-
+            grabScreenPass &= !isPreviewCamera;
             // Assign camera targets (color and depth)
             ConfigureCameraTarget(m_ActiveCameraColorAttachment, m_ActiveCameraDepthAttachment);
 
@@ -971,6 +976,7 @@ namespace UnityEngine.Rendering.Universal
                         generateColorGradingLUT = false;
                         copyColorPass = false;
                         requiresDepthCopyPass = false;
+                        grabScreenPass = false;
                     }
                 }
 
@@ -1254,7 +1260,7 @@ namespace UnityEngine.Rendering.Universal
             // Don't do this for Overlay cameras to not lose depth data in between cameras (as Base is guaranteed to be first)
             if (cameraData.renderType == CameraRenderType.Base && !requiresDepthPrepass && !requiresDepthCopyPass)
                 Shader.SetGlobalTexture("_CameraDepthTexture", SystemInfo.usesReversedZBuffer ? Texture2D.blackTexture : Texture2D.whiteTexture);
-
+            
             if (copyColorPass)
             {
                 // TODO: Downsampling method should be stored in the renderer instead of in the asset.
@@ -1267,7 +1273,16 @@ namespace UnityEngine.Rendering.Universal
                 m_CopyColorPass.Setup(m_ActiveCameraColorAttachment, m_OpaqueColor, downsamplingMethod);
                 EnqueuePass(m_CopyColorPass);
             }
-
+            
+            if (grabScreenPass)
+            {
+                var descriptor = cameraTargetDescriptor;
+                GrabScreenPass.ConfigureDescriptor(ref descriptor);
+                RenderingUtils.ReAllocateHandleIfNeeded(ref m_ScreenColor, descriptor, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_CameraScreenTexture");
+                m_GrabScreenPass.Setup(m_ActiveCameraColorAttachment, m_ScreenColor);
+                EnqueuePass(m_GrabScreenPass);
+            }
+            
             // Motion vectors
             if (renderPassInputs.requiresMotionVectors)
             {
@@ -1651,6 +1666,7 @@ namespace UnityEngine.Rendering.Universal
             internal bool requiresDepthPrepass;
             internal bool requiresNormalsTexture;
             internal bool requiresColorTexture;
+            internal bool requiresScreenTexture;
             internal bool requiresColorTextureCreated;
             internal bool requiresMotionVectors;
             internal RenderPassEvent requiresDepthNormalAtEvent;
@@ -1670,6 +1686,7 @@ namespace UnityEngine.Rendering.Universal
                 bool needsDepth = (pass.input & ScriptableRenderPassInput.Depth) != ScriptableRenderPassInput.None;
                 bool needsNormals = (pass.input & ScriptableRenderPassInput.Normal) != ScriptableRenderPassInput.None;
                 bool needsColor = (pass.input & ScriptableRenderPassInput.Color) != ScriptableRenderPassInput.None;
+                bool needScreen = (pass.input & ScriptableRenderPassInput.Screen) != ScriptableRenderPassInput.None;
                 bool needsMotion = (pass.input & ScriptableRenderPassInput.Motion) != ScriptableRenderPassInput.None;
                 bool eventBeforeMainRendering = pass.renderPassEvent <= beforeMainRenderingEvent;
 
@@ -1684,6 +1701,7 @@ namespace UnityEngine.Rendering.Universal
                 inputSummary.requiresDepthPrepass |= needsNormals || needsDepth && eventBeforeMainRendering;
                 inputSummary.requiresNormalsTexture |= needsNormals;
                 inputSummary.requiresColorTexture |= needsColor;
+                inputSummary.requiresScreenTexture |= needScreen;
                 inputSummary.requiresMotionVectors |= needsMotion;
                 if (needsDepth)
                     inputSummary.requiresDepthTextureEarliestEvent = (RenderPassEvent)Mathf.Min((int)pass.renderPassEvent, (int)inputSummary.requiresDepthTextureEarliestEvent);

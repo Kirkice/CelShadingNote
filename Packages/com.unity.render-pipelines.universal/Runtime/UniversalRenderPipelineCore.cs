@@ -401,6 +401,7 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         public ref bool requiresOpaqueTexture => ref frameData.Get<UniversalCameraData>().requiresOpaqueTexture;
 
+        public ref bool requiresScreenTexture => ref frameData.Get<UniversalCameraData>().requireScreenTexture;
         /// <summary>
         /// Returns true if post processing passes require depth texture.
         /// </summary>
@@ -1860,6 +1861,7 @@ namespace UnityEngine.Rendering.Universal
         ColorGradingLUT,
         CopyColor,
         CopyDepth,
+        GrabScreen,
         DepthNormalPrepass,
         DepthPrepass,
         UpdateReflectionProbeAtlas,

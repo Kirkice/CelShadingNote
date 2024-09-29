@@ -40,6 +40,8 @@ namespace UnityEngine.Rendering.Universal
         /// Used when a <c>ScriptableRenderPass</c> requires a motion vectors texture.
         /// </summary>
         Motion = 1 << 3,
+        
+        Screen = 1 << 4,
     }
 
     // Note: Spaced built-in events so we can add events in between them

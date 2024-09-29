@@ -249,6 +249,8 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         public bool requiresOpaqueTexture;
 
+        public bool requireScreenTexture;
+        
         /// <summary>
         /// Returns true if post processing passes require depth texture.
         /// </summary>
@@ -626,6 +628,7 @@ namespace UnityEngine.Rendering.Universal
             isAlphaOutputEnabled = false;
             requiresDepthTexture = false;
             requiresOpaqueTexture = false;
+            requireScreenTexture = false;
             postProcessingRequiresDepthTexture = false;
             xrRendering = false;
             useGPUOcclusionCulling = false;

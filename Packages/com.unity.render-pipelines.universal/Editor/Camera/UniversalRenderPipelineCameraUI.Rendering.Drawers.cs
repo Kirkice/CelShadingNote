@@ -92,7 +92,8 @@ namespace UnityEditor.Rendering.Universal
                     DrawerRenderingRenderShadows,
                     DrawerRenderingPriority,
                     DrawerRenderingOpaqueTexture,
-                    DrawerRenderingDepthTexture
+                    DrawerRenderingDepthTexture,
+                    DrawRenderingScreenTexture
                 )
             );
 
@@ -105,7 +106,8 @@ namespace UnityEditor.Rendering.Universal
                 CED.Group(
                     DrawerRenderingClearDepth,
                     DrawerRenderingRenderShadows,
-                    DrawerRenderingDepthTexture
+                    DrawerRenderingDepthTexture,
+                    DrawRenderingScreenTexture
                 )
             );
 
@@ -286,6 +288,11 @@ namespace UnityEditor.Rendering.Universal
             static void DrawerRenderingOpaqueTexture(UniversalRenderPipelineSerializedCamera p, Editor owner)
             {
                 EditorGUILayout.PropertyField(p.renderOpaque, Styles.requireOpaqueTexture);
+            }
+
+            static void DrawRenderingScreenTexture(UniversalRenderPipelineSerializedCamera p, Editor owner)
+            {
+                EditorGUILayout.PropertyField(p.renderScreen, Styles.requireScreenTexture);
             }
         }
     }

@@ -311,6 +311,9 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField]
         CameraOverrideOption m_RequiresOpaqueTextureOption = CameraOverrideOption.UsePipelineSettings;
 
+        [SerializeField]
+        CameraOverrideOption m_RequiresScreenTextureOption = CameraOverrideOption.UsePipelineSettings;
+        
         [SerializeField] CameraRenderType m_CameraType = CameraRenderType.Base;
         [SerializeField] List<Camera> m_Cameras = new List<Camera>();
         [SerializeField] int m_RendererIndex = -1;
@@ -339,6 +342,9 @@ namespace UnityEngine.Rendering.Universal
 
         [FormerlySerializedAs("requiresColorTexture"), SerializeField]
         bool m_RequiresColorTexture = false;
+
+        [FormerlySerializedAs("requiresScreenTexture"), SerializeField]
+        bool m_RequiresScreenTexture;
 
         [HideInInspector] [SerializeField] float m_Version = 2;
 
@@ -522,6 +528,21 @@ namespace UnityEngine.Rendering.Universal
             set { m_RequiresOpaqueTextureOption = (value) ? CameraOverrideOption.On : CameraOverrideOption.Off; }
         }
 
+        public bool requireScreenTexture
+        {
+            get
+            {
+                if (m_RequiresScreenTextureOption == CameraOverrideOption.UsePipelineSettings)
+                {
+                    return UniversalRenderPipeline.asset.supportCameraScreenTexture;
+                }
+                else
+                {
+                    return m_RequiresScreenTextureOption == CameraOverrideOption.On;
+                }
+            }
+            set { m_RequiresScreenTextureOption = (value) ? CameraOverrideOption.On : CameraOverrideOption.Off; }
+        }
         /// <summary>
         /// Returns the <see cref="ScriptableRenderer"/> that is used to render this camera.
         /// </summary>
@@ -792,6 +813,7 @@ namespace UnityEngine.Rendering.Universal
             {
                 m_RequiresDepthTextureOption = (m_RequiresDepthTexture) ? CameraOverrideOption.On : CameraOverrideOption.Off;
                 m_RequiresOpaqueTextureOption = (m_RequiresColorTexture) ? CameraOverrideOption.On : CameraOverrideOption.Off;
+                m_RequiresScreenTextureOption = (m_RequiresScreenTexture) ? CameraOverrideOption.On : CameraOverrideOption.Off;
                 m_Version = 2;
             }
         }

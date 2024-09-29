@@ -19,6 +19,7 @@ namespace UnityEngine.Rendering.Universal
 
         static readonly int s_CameraDepthTextureID = Shader.PropertyToID("_CameraDepthTexture");
         static readonly int s_CameraOpaqueTextureID = Shader.PropertyToID("_CameraOpaqueTexture");
+        static readonly int s_CameraScreenTextureID = Shader.PropertyToID("_CameraScreenTexture");
 
         /// <summary>
         /// Creates a new <c>DrawScreenSpaceUIPass</c> instance.
@@ -234,7 +235,10 @@ namespace UnityEngine.Rendering.Universal
 
                 if (cameraData.requiresOpaqueTexture && renderer != null)
                     builder.UseGlobalTexture(s_CameraOpaqueTextureID);
-
+                
+                if(cameraData.requireScreenTexture && renderer != null)
+                    builder.UseGlobalTexture(s_CameraScreenTextureID);
+                
                 builder.SetRenderAttachment(colorBuffer, 0);
                 builder.SetRenderAttachmentDepth(depthBuffer, AccessFlags.ReadWrite);
 

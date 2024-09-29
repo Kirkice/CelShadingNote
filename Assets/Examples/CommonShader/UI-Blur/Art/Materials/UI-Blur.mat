@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Blur
-  m_Shader: {fileID: 4800000, guid: 8871a31db3180a64ebbd86ae899ebe7b, type: 3}
+  m_Shader: {fileID: 4800000, guid: a424eb7ba365ee140a2234aa8d213f8b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -33,14 +33,22 @@ Material:
     - _Blur: 8.08
     - _Blur0: 2
     - _Blur1: 2
-    - _BlurRadius: 0.02
+    - _BlurRadius: 0.0052
+    - _ColorMask: 15
     - _Distance: 10
     - _EnableGaussian: 1
     - _EnableGrainy: 0
-    - _Iteration: 32
+    - _Iteration: 1
     - _RelativeRefractionIndex: 0.67
-    - _Samples: 32
-    - _Scale: 0.00461
-    m_Colors: []
+    - _Samples: 8
+    - _Scale: 0.00186
+    - _Stencil: 18
+    - _StencilComp: 6
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

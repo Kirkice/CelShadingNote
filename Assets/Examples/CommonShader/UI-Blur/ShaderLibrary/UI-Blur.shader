@@ -2,7 +2,18 @@ Shader "Unlit/UI-Blur"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        [Header(UI)]
+        _Color ("Tint", Color) = (1,1,1,1)
+
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+
+        _ColorMask ("Color Mask", Float) = 15
+
+        [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
         
         [Header(Grainy Blur)]
         [Toggle]_EnableGrainy("enable",float) = 0
@@ -18,14 +29,35 @@ Shader "Unlit/UI-Blur"
     {
         Tags
         {
-            "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline"
+            "RenderPipeline" = "UniversalPipeline"
+            "Queue"="Transparent"
+            "IgnoreProjector"="True"
+            "RenderType"="Transparent"
+            "PreviewType"="Plane"
+            "CanUseSpriteAtlas"="True"
         }
 
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+
+        Cull Off
+        Lighting Off
+        ZWrite Off
+        ZTest [unity_GUIZTestMode]
+        Blend SrcAlpha OneMinusSrcAlpha
+        ColorMask [_ColorMask]
+        
         Pass
         {
             Tags
             {
-                "LightMode" = "UniversalForward"
+                "LightMode" = "UIBlur"
             }
             
             HLSLPROGRAM
@@ -36,19 +68,20 @@ Shader "Unlit/UI-Blur"
             struct VertexIn
             {
                 float4 PosL : POSITION;
-                float2 TexC : TEXCOORD0;
+                float4 color : COLOR;
             };
             
             struct VertexOut
             {
                 float4 PosH : SV_POSITION;
-                float4 TexC : TEXCOORD0;
+                float2 ScreenUV : TEXCOORD0;
+                float4 color : TEXCOORD1;
             };
 
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex); 
-            uniform float4 _MainTex_ST;
-            uniform float4 _MainTex_TexelSize;
+            TEXTURE2D(_CameraScreenTexture);
+            SAMPLER(sampler_CameraScreenTexture); 
+            uniform float4 _CameraScreenTexture_ST;
+            uniform float4 _CameraScreenTexture_TexelSize;
             uniform float _BlurRadius;
             uniform int _Iteration;
             uniform float _Scale;
@@ -60,7 +93,9 @@ Shader "Unlit/UI-Blur"
             {
                 VertexOut vout = (VertexOut)0;
                 vout.PosH = TransformObjectToHClip(vin.PosL);
-                vout.TexC.xy = vin.TexC;
+                float4 PosSS = ComputeScreenPos(vout.PosH);
+                vout.ScreenUV = PosSS.xy / PosSS.w;
+                vout.color = vin.color;
                 return vout;
             }
             
@@ -75,7 +110,7 @@ Shader "Unlit/UI-Blur"
                 
                 for ( int i = 0; i < s*s; i++ ) {
                     half2 d = half2(i%s, i/s) - float(_Samples)/2.0;
-                    O += gaussian(d,sigma) * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, U + _Scale * d);
+                    O += gaussian(d,sigma) * SAMPLE_TEXTURE2D(_CameraScreenTexture, sampler_CameraScreenTexture, U + _Scale * d);
                 }
                 
                 return O;
@@ -91,7 +126,7 @@ Shader "Unlit/UI-Blur"
             {
 	            half2 randomOffset = float2(0.0, 0.0);
 	            half4 finalColor = half4(0.0, 0.0, 0.0, 0.0);
-	            float random = Rand(pin.TexC);
+	            float random = Rand(pin.ScreenUV);
 	            
 	            for (int k = 0; k < int(_Iteration); k ++)
 	            {
@@ -100,22 +135,23 @@ Shader "Unlit/UI-Blur"
 		            random = frac(43758.5453 * random + 0.61432);
 		            randomOffset.y = (random - 0.5) * 2.0;
 		            
-		            finalColor += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, half2(pin.TexC + randomOffset * _BlurRadius));
+		            finalColor += SAMPLE_TEXTURE2D(_CameraScreenTexture, sampler_CameraScreenTexture, half2(pin.ScreenUV + randomOffset * _BlurRadius));
 	            }
 	            return finalColor / _Iteration;
             }
             
             half4 PS(VertexOut pin) : SV_Target
             {
+                half4 color = SAMPLE_TEXTURE2D(_CameraScreenTexture, sampler_CameraScreenTexture, pin.ScreenUV);
                 UNITY_BRANCH
                 if (_EnableGaussian)
-                    return blur(pin.TexC);
+                    color = blur(pin.ScreenUV);
 
                 UNITY_BRANCH
                 if (_EnableGrainy)
-                    return GrainyBlur(pin);
+                    color = GrainyBlur(pin);
                 
-                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, pin.TexC);
+                return half4(color.rgb * pin.color,pin.color.a);
             }
             
             ENDHLSL

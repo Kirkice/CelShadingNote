@@ -972,6 +972,10 @@ namespace UnityEngine.Rendering.Universal
             requiresDepthCopyPass |= !requiresDepthPrepass && DebugHandlerRequireDepthPass(frameData.Get<UniversalCameraData>());
             bool requiresColorCopyPass = cameraData.requiresOpaqueTexture || renderPassInputs.requiresColorTexture;
             requiresColorCopyPass &= !cameraData.isPreviewCamera;
+            
+            bool requiresGrabScreenPass = cameraData.requireScreenTexture || renderPassInputs.requiresScreenTexture;
+            requiresGrabScreenPass &= !cameraData.isPreviewCamera;
+            
             bool requiredColorGradingLutPass = cameraData.postProcessEnabled && m_PostProcessPasses.isCreated;
 
             bool isDeferred = this.renderingModeActual == RenderingMode.Deferred;

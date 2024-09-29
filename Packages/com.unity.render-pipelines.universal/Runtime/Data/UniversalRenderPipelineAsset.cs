@@ -475,6 +475,7 @@ namespace UnityEngine.Rendering.Universal
         // General settings
         [SerializeField] bool m_RequireDepthTexture = false;
         [SerializeField] bool m_RequireOpaqueTexture = false;
+        [SerializeField] bool m_RequireScreenTexture = false;
         [SerializeField] Downsampling m_OpaqueDownsampling = Downsampling._2xBilinear;
         [SerializeField] bool m_SupportsTerrainHoles = true;
 
@@ -1042,6 +1043,12 @@ namespace UnityEngine.Rendering.Universal
             set => m_RequireOpaqueTexture = value;
         }
 
+        public bool supportCameraScreenTexture
+        {
+            get => m_RequireScreenTexture;
+            set => m_RequireScreenTexture = value;
+        }
+        
         /// <summary>
         /// Returns the downsampling method used when copying the camera color texture after rendering opaques.
         /// </summary>

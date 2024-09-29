@@ -25,7 +25,8 @@ namespace UnityEditor.Rendering.Universal
 
                 public static GUIContent requireDepthTexture = EditorGUIUtility.TrTextContent("Depth Texture", "If this is enabled, the camera builds a screen-space depth texture. Note that generating the texture incurs a performance cost.");
                 public static GUIContent requireOpaqueTexture = EditorGUIUtility.TrTextContent("Opaque Texture", "If this is enabled, the camera copies the rendered view so it can be accessed at a later stage in the pipeline.");
-
+                public static GUIContent requireScreenTexture = EditorGUIUtility.TrTextContent("Screen Texture", "If this is enabled, the camera copies the rendered view so it can be accessed at a later stage in the pipeline.");
+                
                 public static GUIContent clearDepth = EditorGUIUtility.TrTextContent("Clear Depth", "If enabled, depth from the previous camera will be cleared.");
                 public static GUIContent renderingShadows = EditorGUIUtility.TrTextContent("Render Shadows", "Makes this camera render shadows.");
 
