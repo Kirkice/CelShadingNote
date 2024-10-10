@@ -31,6 +31,7 @@ namespace UnityEngine.Rendering.Universal.Internal
         int m_ShadowCasterCascadesCount;
 
         int m_MainLightShadowmapID;
+        int m_MainLightShadowrampID;
         internal RTHandle m_MainLightShadowmapTexture;
         private RTHandle m_EmptyLightShadowmapTexture;
         private const int k_EmptyShadowMapDimensions = 1;
@@ -77,7 +78,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             MainLightShadowConstantBuffer._ShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
 
             m_MainLightShadowmapID = Shader.PropertyToID("_MainLightShadowmapTexture");
-
+            m_MainLightShadowrampID = Shader.PropertyToID("_MainLightShadowRampTexture");
             m_EmptyLightShadowmapTexture = ShadowUtils.AllocShadowRT(k_EmptyShadowMapDimensions, k_EmptyShadowMapDimensions, k_ShadowmapBufferBits, 1, 0, name: k_EmptyShadowMapName);
             m_EmptyShadowmapNeedsClear = true;
         }
@@ -229,6 +230,14 @@ namespace UnityEngine.Rendering.Universal.Internal
             InitRendererLists(ref m_PassData, context, default(RenderGraph), false);
 
             RenderMainLightCascadeShadowmap(CommandBufferHelpers.GetRasterCommandBuffer(universalRenderingData.commandBuffer), ref m_PassData, false);
+            if (shadowData.supportShadowRamp)
+            {
+                universalRenderingData.commandBuffer.EnableKeyword(ShaderGlobalKeywords._ENABLE_SHADOW_RAMP);
+                universalRenderingData.commandBuffer.SetGlobalTexture(m_MainLightShadowrampID,shadowData.shadowRampTexture);
+            }
+            else
+                universalRenderingData.commandBuffer.DisableKeyword(ShaderGlobalKeywords._ENABLE_SHADOW_RAMP);
+            
             universalRenderingData.commandBuffer.SetGlobalTexture(m_MainLightShadowmapID, m_MainLightShadowmapTexture.nameID);
         }
 
@@ -255,7 +264,7 @@ namespace UnityEngine.Rendering.Universal.Internal
             cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowParams, s_EmptyShadowParams);
             cmd.SetGlobalVector(MainLightShadowConstantBuffer._ShadowmapSize, s_EmptyShadowmapSize);
         }
-
+        
         void RenderMainLightCascadeShadowmap(RasterCommandBuffer cmd, ref PassData data, bool isRenderGraph)
         {
             var lightData = data.lightData;

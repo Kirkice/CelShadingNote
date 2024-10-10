@@ -554,6 +554,8 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField] float m_CascadeBorder = 0.2f;
         [SerializeField] float m_ShadowDepthBias = 1.0f;
         [SerializeField] float m_ShadowNormalBias = 1.0f;
+        [SerializeField] bool m_ShadowRampSupported = false;
+        [SerializeField] [GradientUsage(true)]Gradient m_ShadowGradient = new Gradient();
 #if UNITY_EDITOR // multi_compile_fragment _ _SHADOWS_SOFT
         [ShaderKeywordFilter.RemoveIf(false, keywordNames: ShaderKeywordStrings.SoftShadows)]
         [SerializeField] bool m_AnyShadowsSupported = true;
@@ -1267,6 +1269,18 @@ namespace UnityEngine.Rendering.Universal
             }
         }
 
+        public bool supportShadowRamp
+        {
+            get => m_ShadowRampSupported;
+            internal set => m_ShadowRampSupported = value;
+        }
+
+        public Gradient mainLightShadowGradient
+        {
+            get => m_ShadowGradient;
+            internal set => m_ShadowGradient = value;
+        }
+        
         /// <summary>
         /// Returns the main light shadowmap resolution used for this <c>UniversalRenderPipelineAsset</c>.
         /// </summary>

@@ -47,8 +47,16 @@ half3 LightingPhysicallyBased(BRDFData brdfData, BRDFData brdfDataClearCoat,
     half3 normalWS, half3 viewDirectionWS,
     half clearCoatMask, bool specularHighlightsOff)
 {
+
+    half3 ramp_color = half3(1,1,1);
+    #if defined(_ENABLE_SHADOW_RAMP)
+    ramp_color = SAMPLE_TEXTURE2D(_MainLightShadowRampTexture,sampler_LinearClampstate,half2(lightAttenuation,0.5));
+    #endif
+
+    ramp_color *= lightAttenuation;
+    
     half NdotL = saturate(dot(normalWS, lightDirectionWS));
-    half3 radiance = lightColor * (lightAttenuation * NdotL);
+    half3 radiance = lightColor * (ramp_color * NdotL);
 
     half3 brdf = brdfData.diffuse;
 #ifndef _SPECULARHIGHLIGHTS_OFF

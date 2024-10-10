@@ -59,6 +59,11 @@ TEXTURE2D_SHADOW(_MainLightShadowmapTexture);
 TEXTURE2D_SHADOW(_AdditionalLightsShadowmapTexture);
 SAMPLER_CMP(sampler_LinearClampCompare);
 
+#if defined(_ENABLE_SHADOW_RAMP)
+TEXTURE2D(_MainLightShadowRampTexture);
+SAMPLER(sampler_LinearClampstate);
+#endif
+
 // GLES3 causes a performance regression in some devices when using CBUFFER.
 #ifndef SHADER_API_GLES3
 CBUFFER_START(LightShadows)

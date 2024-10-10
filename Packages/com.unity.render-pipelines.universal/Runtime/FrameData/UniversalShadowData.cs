@@ -76,6 +76,13 @@ namespace UnityEngine.Rendering.Universal
         /// </summary>
         public int shadowmapDepthBufferBits;
 
+        public bool supportShadowRamp;
+        
+        /// <summary>
+        /// 用于产生阴影ramp
+        /// </summary>
+        public Texture2D shadowRampTexture = null;
+        
         /// <summary>
         /// A list of shadow bias.
         /// </summary>
@@ -108,6 +115,8 @@ namespace UnityEngine.Rendering.Universal
             additionalLightsShadowmapWidth = 0;
             additionalLightsShadowmapHeight = 0;
             supportsSoftShadows = false;
+            supportShadowRamp = false;
+            shadowRampTexture = null;
             shadowmapDepthBufferBits = 0;
             bias?.Clear();
             resolution?.Clear();
@@ -120,6 +129,22 @@ namespace UnityEngine.Rendering.Universal
 
             visibleLightsShadowCullingInfos = default;
             shadowAtlasLayout = default;
+        }
+        
+        public void SetGradientsToRampTexture(Gradient gradient)
+        {
+            if(supportShadowRamp == false)
+                return;
+            
+            int ramp_width = 128;
+            shadowRampTexture = new Texture2D(ramp_width, 1, TextureFormat.RGBAFloat, false);
+
+            for (int x = 0; x < ramp_width; x++)
+            {
+                Color color = gradient.Evaluate((float)x / (ramp_width - 1));
+                shadowRampTexture.SetPixel(x, 0, color);
+            }
+            shadowRampTexture.Apply();
         }
     }
 }

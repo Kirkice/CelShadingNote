@@ -1584,6 +1584,9 @@ namespace UnityEngine.Rendering.Universal
             shadowData.mainLightShadowmapHeight = urpAsset.mainLightShadowmapResolution;
             shadowData.additionalLightsShadowmapWidth = shadowData.additionalLightsShadowmapHeight = urpAsset.additionalLightsShadowmapResolution;
 
+            shadowData.supportShadowRamp = urpAsset.supportShadowRamp;
+            shadowData.SetGradientsToRampTexture(urpAsset.mainLightShadowGradient);
+            
             // This will be setup in AdditionalLightsShadowCasterPass.
             shadowData.isKeywordAdditionalLightShadowsEnabled = false;
             shadowData.isKeywordSoftShadowsEnabled = false;

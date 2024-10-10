@@ -415,6 +415,14 @@ namespace UnityEditor.Rendering.Universal
 
             serialized.shadowDepthBiasProp.floatValue = EditorGUILayout.Slider(Styles.shadowDepthBias, serialized.shadowDepthBiasProp.floatValue, 0.0f, UniversalRenderPipeline.maxShadowBias);
             serialized.shadowNormalBiasProp.floatValue = EditorGUILayout.Slider(Styles.shadowNormalBias, serialized.shadowNormalBiasProp.floatValue, 0.0f, UniversalRenderPipeline.maxShadowBias);
+            EditorGUILayout.PropertyField(serialized.supportShadowRampProp, Styles.supportsShadowRamp);
+            if (serialized.supportShadowRampProp.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(serialized.mainLightShadowGradientProp, Styles.mainLightShadowGradient);
+                EditorGUI.indentLevel--;
+            }
+            
             EditorGUILayout.PropertyField(serialized.softShadowsSupportedProp, Styles.supportsSoftShadows);
             if (serialized.softShadowsSupportedProp.boolValue)
             {

@@ -1015,6 +1015,7 @@ namespace UnityEngine.Rendering.Universal
         public static GlobalKeyword _OUTPUT_DEPTH;
         public static GlobalKeyword LinearToSRGBConversion;
         public static GlobalKeyword _ENABLE_ALPHA_OUTPUT;
+        public static GlobalKeyword _ENABLE_SHADOW_RAMP;
 
         // TODO: Move following keywords to Local keywords?
         // https://docs.unity3d.com/ScriptReference/Rendering.LocalKeyword.html
@@ -1123,6 +1124,7 @@ namespace UnityEngine.Rendering.Universal
             ShaderGlobalKeywords._OUTPUT_DEPTH = GlobalKeyword.Create(ShaderKeywordStrings._OUTPUT_DEPTH);
             ShaderGlobalKeywords.LinearToSRGBConversion = GlobalKeyword.Create(ShaderKeywordStrings.LinearToSRGBConversion);
             ShaderGlobalKeywords._ENABLE_ALPHA_OUTPUT = GlobalKeyword.Create(ShaderKeywordStrings._ENABLE_ALPHA_OUTPUT);
+            ShaderGlobalKeywords._ENABLE_SHADOW_RAMP = GlobalKeyword.Create(ShaderKeywordStrings._ENABLE_SHADOW_RAMP);
         }
     }
 
@@ -1445,6 +1447,8 @@ namespace UnityEngine.Rendering.Universal
 
         /// <summary> Keyword used for enable alpha output. Used in post processing. </summary>
         public const string _ENABLE_ALPHA_OUTPUT = "_ENABLE_ALPHA_OUTPUT";
+
+        public const string _ENABLE_SHADOW_RAMP = "_ENABLE_SHADOW_RAMP";
     }
 
     public sealed partial class UniversalRenderPipeline

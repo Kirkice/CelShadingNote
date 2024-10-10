@@ -63,6 +63,8 @@ namespace UnityEditor.Rendering.Universal
         public SerializedProperty shadowCascadeBorderProp { get; }
         public SerializedProperty shadowDepthBiasProp { get; }
         public SerializedProperty shadowNormalBiasProp { get; }
+        public SerializedProperty supportShadowRampProp { get; }
+        public SerializedProperty mainLightShadowGradientProp { get; }
         public SerializedProperty softShadowsSupportedProp { get; }
         public SerializedProperty softShadowQualityProp { get; }
         public SerializedProperty conservativeEnclosingSphereProp { get; }
@@ -156,6 +158,8 @@ namespace UnityEditor.Rendering.Universal
             shadowCascadeBorderProp = serializedObject.FindProperty("m_CascadeBorder");
             shadowDepthBiasProp = serializedObject.FindProperty("m_ShadowDepthBias");
             shadowNormalBiasProp = serializedObject.FindProperty("m_ShadowNormalBias");
+            supportShadowRampProp = serializedObject.FindProperty("m_ShadowRampSupported");
+            mainLightShadowGradientProp = serializedObject.FindProperty("m_ShadowGradient");
             softShadowsSupportedProp = serializedObject.FindProperty("m_SoftShadowsSupported");
             softShadowQualityProp = serializedObject.FindProperty("m_SoftShadowQuality");
             conservativeEnclosingSphereProp = serializedObject.FindProperty("m_ConservativeEnclosingSphere");
