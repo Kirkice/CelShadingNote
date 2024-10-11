@@ -1563,6 +1563,8 @@ namespace UnityEngine.Rendering.Universal
             UniversalRenderingData universalRenderingData = frameData.Get<UniversalRenderingData>();
             UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
             UniversalLightData lightData = frameData.Get<UniversalLightData>();
+            
+            PreIntegratedFGD.instance.Bind(universalRenderingData.commandBuffer, PreIntegratedFGD.FGDIndex.FGD_GGXAndDisneyDiffuse);
 
             m_ForwardLights.SetupLights(CommandBufferHelpers.GetUnsafeCommandBuffer(renderingData.commandBuffer),
                 universalRenderingData, cameraData, lightData);

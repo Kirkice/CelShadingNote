@@ -138,6 +138,8 @@ MonoBehaviour:
         m_CoreBlitPS: {fileID: 4800000, guid: 93446b5c5339d4f00b85c159e1159b7c, type: 3}
         m_CoreBlitColorAndDepthPS: {fileID: 4800000, guid: d104b2fc1ca6445babb8e90b0758136b, type: 3}
         m_SamplingPS: {fileID: 4800000, guid: 04c410c9937594faa893a11dceb85f7e, type: 3}
+        m_PreIntegratedFGD_GGXDisneyDiffusePS: {fileID: 4800000, guid: 4c351deaa85fc9c48b7bbd41f3047d82, type: 3}
+        m_PreIntegratedFGD_CharlieFabricLambertPS: {fileID: 4800000, guid: 793c3c6faf5715045856b508462930c6, type: 3}
     - rid: 6852985685364965381
       type: {class: UniversalRenderPipelineRuntimeTextures, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
