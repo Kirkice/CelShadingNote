@@ -117,6 +117,7 @@ float4 _MainLightPosition;
 half4 _MainLightColor;
 half4 _MainLightOcclusionProbes;
 uint _MainLightLayerMask;
+half4 _MainLightToonParams;
 
 // x: SSAO Enabled/Disabled (Needed for situations when OFF keyword is stripped out but feature disabled in runtime)
 // yz are currently unused
@@ -171,6 +172,7 @@ half4 _AdditionalLightsAttenuation[MAX_VISIBLE_LIGHTS];
 half4 _AdditionalLightsSpotDir[MAX_VISIBLE_LIGHTS];
 half4 _AdditionalLightsOcclusionProbes[MAX_VISIBLE_LIGHTS];
 float _AdditionalLightsLayerMasks[MAX_VISIBLE_LIGHTS]; // we want uint[] but Unity api does not support it.
+half4 _AdditionalLightToonParams[MAX_VISIBLE_LIGHTS];
 #ifndef SHADER_API_GLES3
 CBUFFER_END
 #endif

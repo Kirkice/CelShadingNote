@@ -36,6 +36,8 @@ namespace UnityEngine.Rendering.Universal
             /// </summary>
             public Vector4 occlusionProbeChannels;
 
+            public Vector4 toonParams;
+
             /// <summary>
             /// The layer mask used.
             /// </summary>

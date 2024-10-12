@@ -1463,7 +1463,7 @@ namespace UnityEngine.Rendering.Universal
         static Vector4 k_DefaultLightAttenuation = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         static Vector4 k_DefaultLightSpotDirection = new Vector4(0.0f, 0.0f, 1.0f, 0.0f);
         static Vector4 k_DefaultLightsProbeChannel = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-
+        static Vector4 k_DefaultLightToonParams = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         static List<Vector4> m_ShadowBiasData = new List<Vector4>();
         static List<int> m_ShadowResolutionData = new List<int>();
 
@@ -1800,14 +1800,14 @@ namespace UnityEngine.Rendering.Universal
         /// <param name="lightAttenuation">The attenuation of the light.</param>
         /// <param name="lightSpotDir">The direction of the light.</param>
         /// <param name="lightOcclusionProbeChannel">The occlusion probe channel for the light.</param>
-        public static void InitializeLightConstants_Common(NativeArray<VisibleLight> lights, int lightIndex, out Vector4 lightPos, out Vector4 lightColor, out Vector4 lightAttenuation, out Vector4 lightSpotDir, out Vector4 lightOcclusionProbeChannel)
+        public static void InitializeLightConstants_Common(NativeArray<VisibleLight> lights, int lightIndex, out Vector4 lightPos, out Vector4 lightColor, out Vector4 lightAttenuation, out Vector4 lightSpotDir, out Vector4 lightOcclusionProbeChannel,out Vector4 lightToonParams)
         {
             lightPos = k_DefaultLightPosition;
             lightColor = k_DefaultLightColor;
             lightOcclusionProbeChannel = k_DefaultLightsProbeChannel;
             lightAttenuation = k_DefaultLightAttenuation;  // Directional by default.
             lightSpotDir = k_DefaultLightSpotDirection;
-
+            lightToonParams = k_DefaultLightToonParams;
             // When no lights are visible, main light will be set to -1.
             // In this case we initialize it to default values and return
             if (lightIndex < 0)
@@ -1823,6 +1823,14 @@ namespace UnityEngine.Rendering.Universal
             {
                 Vector4 dir = -lightLocalToWorld.GetColumn(2);
                 lightPos = new Vector4(dir.x, dir.y, dir.z, 0.0f);
+                
+                //  -------------TODO
+                light.TryGetComponent<UniversalAdditionalLightData>(out var data);
+                float maxSmoothness = Mathf.Clamp01(1.35f / (1.0f + Mathf.Pow(1.15f * (0.0315f * data.angularDiameter + 0.4f), 2f)) - 0.11f);
+                lightToonParams.x = (1.0f - maxSmoothness) * (1.0f - maxSmoothness);
+                lightToonParams.y = 1;
+                lightToonParams.z = 1;
+                lightToonParams.w = 1;
             }
             else
             {
@@ -1831,6 +1839,14 @@ namespace UnityEngine.Rendering.Universal
 
                 GetPunctualLightDistanceAttenuation(lightData.range, ref lightAttenuation);
 
+                //  -------------TODO
+                light.TryGetComponent<UniversalAdditionalLightData>(out var data);
+                float maxSmoothness = Mathf.Clamp01(1.35f / (1.0f + Mathf.Pow(1.15f * (0.0315f * data.angularDiameter + 0.4f), 2f)) - 0.11f);
+                lightToonParams.x = (1.0f - maxSmoothness) * (1.0f - maxSmoothness);
+                lightToonParams.y = data.baseContribution;
+                lightToonParams.z = data.rimContribution;
+                lightToonParams.w = data.outlineContribution;
+                
                 if (lightType == LightType.Spot)
                 {
                     GetSpotAngleAttenuation(lightData.spotAngle, light?.innerSpotAngle, ref lightAttenuation);

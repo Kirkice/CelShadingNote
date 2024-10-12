@@ -15,12 +15,16 @@ namespace UnityEditor.Rendering
             public static readonly GUIContent shapeHeader = EditorGUIUtility.TrTextContent("Shape");
             /// <summary>Title with "Rendering"</summary>
             public static readonly GUIContent renderingHeader = EditorGUIUtility.TrTextContent("Rendering");
+            /// <summary>Title with "Contribution"</summary>
+            public static readonly GUIContent contributionsHeader = EditorGUIUtility.TrTextContent("Contribution");
             /// <summary>Title with "Emission"</summary>
             public static readonly GUIContent emissionHeader = EditorGUIUtility.TrTextContent("Emission");
             /// <summary>Title with "Shadows"</summary>
             public static readonly GUIContent shadowHeader = EditorGUIUtility.TrTextContent("Shadows");
             /// <summary>Title with "Light Layer"</summary>
             public static readonly GUIContent lightLayer = EditorGUIUtility.TrTextContent("Rendering Layer Mask", "Specifies the Rendering Layers that the Light affects. This Light illuminates Renderers with matching Rendering Layer flags.");
+            // Shape
+            public static readonly GUIContent angularDiameter = EditorGUIUtility.TrTextContent("Angular Diameter", "Angular diameter of the emissive celestial body represented by the light as seen from the camera (in degrees). Used to render the sun/moon disk.");
 
             // Emission
             /// <summary>Label with "Color"</summary>

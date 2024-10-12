@@ -108,17 +108,17 @@ float GetCharacterDirectRimLightArea(float3 normalVS, float2 screenUV, float d, 
     return rimArea;
 }
 
-inline void GF2LightingPhysicallyBased(PBRData pbrData, Light light)
+inline void GF2LightingPhysicallyBased(half3 normalWS, PBRData pbrData, Light light)
 {
-    // dirLight.lightColor = lerp(dirLight.lightColor, _SelfLight.rgb, _MainLightColorLerp);
-    //
-    // float3 lightDirWS = dirLight.lightDirection;
-    // float NdotL = dot(normalWS, lightDirWS);
-    //
-    // float clampedNdotL = saturate(NdotL);
-    // float halfLambert = NdotL * 0.5 + 0.5;
-    // float clampedRoughness = max(roughness, dirLight.minRoughness);
-    //
+    light.color = lerp(light.color, _SelfLight.rgb, _MainLightColorLerp);
+    
+    float3 lightDirWS = light.direction;
+    float NdotL = dot(normalWS, lightDirWS);
+    
+    float clampedNdotL = saturate(NdotL);
+    float halfLambert = NdotL * 0.5 + 0.5;
+    float clampedRoughness = max(pbrData.roughness, light.lightToonParams.x);
+    
     // float LdotV, NdotH, LdotH, invLenLV;
     // GetBSDFAngle(viewDirWS, lightDirWS, NdotL, NdotV, LdotV, NdotH, LdotH, invLenLV);
     // float3 lightDirVS = TransformWorldToViewDir(lightDirWS);

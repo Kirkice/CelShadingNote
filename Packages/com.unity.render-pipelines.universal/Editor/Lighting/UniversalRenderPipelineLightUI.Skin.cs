@@ -74,6 +74,12 @@ namespace UnityEditor.Rendering.Universal
             /// <summary>Title with "Rendering Layer"</summary>
             public static readonly GUIContent RenderingLayers = EditorGUIUtility.TrTextContent("Rendering Layers", "Select the Rendering Layers that the Light affects. This Light affects objects where at least one Rendering Layer value matches.");
             public static readonly GUIContent RenderingLayersDisabled = EditorGUIUtility.TrTextContent("Rendering Layers", "Rendering Layers are disabled because they have a small GPU performance cost. To enable this setting, go to the active Universal Render Pipeline Asset, and enable Lighting -> Use Rendering Layers.");
+            
+            public static readonly GUIContent AngularDiameter = EditorGUIUtility.TrTextContent("Angular Diameter", "Angular diameter of the emissive celestial body represented by the light as seen from the camera (in degrees). Used to render the sun/moon disk.");
+            public static readonly GUIContent LightRadius = EditorGUIUtility.TrTextContent("Radius", "Sets the radius of the light source. This affects the falloff of diffuse lighting, the spread of the specular highlight, and the softness of Ray Traced shadows.");
+            public static readonly GUIContent BaseContribution = EditorGUIUtility.TrTextContent("Base Light", "Sets the contribution of the Base Light.");
+            public static readonly GUIContent RimContribution = EditorGUIUtility.TrTextContent("Rim Light", "Sets the contribution of the Rim Light.");
+            public static readonly GUIContent OutlineContribution = EditorGUIUtility.TrTextContent("Outline Light", "Sets the contribution of the Outline Light.");
         }
     }
 }

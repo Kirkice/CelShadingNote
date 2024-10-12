@@ -16,6 +16,7 @@ struct Light
     float   distanceAttenuation; // full-float precision required on some platforms
     half    shadowAttenuation;
     uint    layerMask;
+    half4   lightToonParams;
 };
 
 #if USE_FORWARD_PLUS && defined(LIGHTMAP_ON) && defined(LIGHTMAP_SHADOW_MIXING)
@@ -95,6 +96,7 @@ Light GetMainLight()
     light.color = _MainLightColor.rgb;
 
     light.layerMask = _MainLightLayerMask;
+    light.lightToonParams = _MainLightToonParams;
 
     return light;
 }
@@ -142,12 +144,14 @@ Light GetAdditionalPerObjectLight(int perObjectLightIndex, float3 positionWS)
     half3 color = _AdditionalLightsBuffer[perObjectLightIndex].color.rgb;
     half4 distanceAndSpotAttenuation = _AdditionalLightsBuffer[perObjectLightIndex].attenuation;
     half4 spotDirection = _AdditionalLightsBuffer[perObjectLightIndex].spotDirection;
+    half4 lightToonParams = _AdditionalLightsBuffer[perObjectLightIndex];
     uint lightLayerMask = _AdditionalLightsBuffer[perObjectLightIndex].layerMask;
 #else
     float4 lightPositionWS = _AdditionalLightsPosition[perObjectLightIndex];
     half3 color = _AdditionalLightsColor[perObjectLightIndex].rgb;
     half4 distanceAndSpotAttenuation = _AdditionalLightsAttenuation[perObjectLightIndex];
     half4 spotDirection = _AdditionalLightsSpotDir[perObjectLightIndex];
+    half4 lightToonParams = _AdditionalLightToonParams[perObjectLightIndex];
     uint lightLayerMask = asuint(_AdditionalLightsLayerMasks[perObjectLightIndex]);
 #endif
 
@@ -166,7 +170,7 @@ Light GetAdditionalPerObjectLight(int perObjectLightIndex, float3 positionWS)
     light.shadowAttenuation = 1.0; // This value can later be overridden in GetAdditionalLight(uint i, float3 positionWS, half4 shadowMask)
     light.color = color;
     light.layerMask = lightLayerMask;
-
+    light.lightToonParams = lightToonParams;
     return light;
 }
 

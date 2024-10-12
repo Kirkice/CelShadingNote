@@ -29,6 +29,17 @@ namespace UnityEditor.Rendering.Universal
         public SerializedProperty customShadowLayers { get; }
         public SerializedProperty shadowRenderingLayers { get; }
         
+        // Shape Directional
+        public SerializedProperty angularDiameter { get; }
+
+        // Shape Puntual
+        public SerializedProperty shapeRadius { get; }
+
+        // Light Contributions
+        public SerializedProperty baseContributionProp { get; }
+        public SerializedProperty rimContributionProp { get; }
+        public SerializedProperty outlineContributionProp { get; }
+        
         public SerializedProperty useCustomShadowBoundProp { get; }
         public SerializedProperty customShadowBoundSpherePositionProp { get; }
         public SerializedProperty customShadowBoundSphereRadiusProp { get; }
@@ -78,6 +89,14 @@ namespace UnityEditor.Rendering.Universal
             customShadowLayers = serializedAdditionalDataObject.FindProperty("m_CustomShadowLayers");
             shadowRenderingLayers = serializedAdditionalDataObject.FindProperty("m_ShadowRenderingLayers");
 
+            angularDiameter = serializedAdditionalDataObject.FindProperty("m_AngularDiameter");
+
+            shapeRadius = serializedAdditionalDataObject.FindProperty("m_ShapeRadius");
+
+            baseContributionProp = serializedAdditionalDataObject.FindProperty("m_BaseContribution");
+            rimContributionProp = serializedAdditionalDataObject.FindProperty("m_RimContribution");
+            outlineContributionProp = serializedAdditionalDataObject.FindProperty("m_OutlineContribution");
+            
             useCustomShadowBoundProp = serializedAdditionalDataObject.FindProperty("m_UseCustomShadowBound");
             customShadowBoundSpherePositionProp = serializedAdditionalDataObject.FindProperty("m_CustomShadowBoundSpherePosition");
             customShadowBoundSphereRadiusProp = serializedAdditionalDataObject.FindProperty("m_CustomShadowBoundSphereRadius");
